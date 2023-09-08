@@ -1,0 +1,35 @@
+body,
+body * {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+#container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #151515;
+    box-shadow: 0 0 1.25rem 0.5rem #30303020;
+    width: 400px;
+    height: 150px;
+    border-radius: 30px;
+}
+
+#textDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+p {
+    color: #ce0000;
+    font-size: 5rem;
+    z-index: 1;
+}

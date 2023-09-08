@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Subathon Timer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+<body>
+<div id="container" style="position: absolute">
+    <p style="
+          font-size: 20px;
+          position: fixed;
+          top: 8px;
+          left: 50%;
+          translate: -50% 0;"> TIME REMAINING: </p>
+    <div id="textDiv">
+        <p id="timeText">00:00:00</p>
+    </div>
+</div>
+<script>
+    let time = 0;
+    let enabled = false;
+    let timeTextElem = document.getElementById("timeText")
+    const getJSON = function (url, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.responseType = "json";
+        xhr.onload = function () {
+            let status = xhr.status;
+            if (status === 200) {
+                callback(null, xhr.response);
+            } else {
+                callback(status, xhr.response);
+            }
+        };
+        xhr.send();
+    };
+
+    getJSON(
+        "https://supersecretsubathon76699.tbm-striker.watch/sync",
+        function (err, data) {
+            if (err !== null) {
+                console.log("Something went wrong: " + err);
+            } else {
+                time = data.time;
+                enabled = data.enabled;
+                timeTextElem.innerText = format(time);
+            }
+        }
+    );
+
+    setInterval(()=>{
+        getJSON(
+            "https://supersecretsubathon76699.tbm-striker.watch/sync",
+            function (err, data) {
+                if (err !== null) {
+                    console.log("Something went wrong: " + err);
+                } else {
+                    time = data.time;
+                    enabled = data.enabled;
+                }
+            }
+        );
+    }, 5000);
+
+    setInterval(()=>{
+        if (enabled) {
+            time--;
+            timeTextElem.innerText = format(time);
+        }
+    },1000);
+
+    function format(totalSeconds) {
+        let hours = Math.floor(totalSeconds / 3600);
+        totalSeconds %= 3600;
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+
+        minutes = String(minutes).padStart(2, "0");
+        hours = String(hours).padStart(2, "0");
+        seconds = String(seconds).padStart(2, "0");
+
+        return `${hours}:${minutes}:${seconds}`
+    }
+</script>
+</body>
+</html>
